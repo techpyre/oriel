@@ -162,7 +162,7 @@ public final class FocusManager: ObservableObject {
         }
     }
 
-    // Matches Oriel's FocusManager regexes against donotdisturbd logs
+    // Extracts active Focus mode fields from donotdisturbd log lines
     nonisolated public static func parseLogLine(_ line: String) -> (identifier: String?, symbol: String?, tintColorName: String?)? {
         guard line.contains("activeModeIdentifier") else { return nil }
         let idPattern = #"activeModeIdentifier[:=]\s*([A-Za-z0-9._-]+|\(null\))"#

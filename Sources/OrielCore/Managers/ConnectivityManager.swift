@@ -146,7 +146,7 @@ public final class ConnectivityManager: NSObject, ObservableObject, CBCentralMan
         }
     }
 
-    // Regex parser for OutputContext protobuf logs (like Oriel's ConnectivityManager)
+    // Regex parser for OutputContext protobuf logs
     public static func parseOutputContextLog(_ text: String) -> (name: String, clusterSize: Int, model: String?)? {
         guard text.contains("[OutputContext]") || text.contains("OutputDevice") else { return nil }
         let namePattern = #"name\s*=\s*"([^"]+)";"#

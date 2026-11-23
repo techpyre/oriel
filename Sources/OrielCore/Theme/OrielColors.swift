@@ -3,7 +3,7 @@ import AppKit
 import SwiftUI
 import CoreImage
 
-// MARK: - Exact Color Palette extracted from Oriel.app Assets.car
+// MARK: - Color Tokens
 
 public enum OrielColors {
     public static let accent = Color(red: 0.1765, green: 0.8314, blue: 0.7490) // #2DD4BF

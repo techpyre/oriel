@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 import OrielCore
 
-/// Renders Oriel's Lock Screen overlay widgets (Now Playing, Weather, Calendar, Focus,
+/// Overlay widgets rendered on the Lock Screen (Now Playing, Weather, Calendar, Focus,
 /// Connectivity, Battery) over the elevated Lock Screen space using Clear / Frosted / Glass styling.
 public struct LockScreenView: View {
     @ObservedObject private var settings = AppSettings.shared
@@ -175,7 +175,7 @@ public struct LockScreenView: View {
                             font: .system(size: 13.5, weight: .semibold),
                             color: .white
                         )
-                        Text(media.track.hasTrack ? media.track.artist : "Pronto alla riproduzione")
+                        Text(media.track.hasTrack ? media.track.artist : "Ready for playback")
                             .font(.system(size: 11.5))
                             .foregroundStyle(.white.opacity(0.7))
                             .lineLimit(1)

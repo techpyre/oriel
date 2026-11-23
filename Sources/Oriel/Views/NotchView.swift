@@ -3,7 +3,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 import OrielCore
 
-// MARK: - Root Liquid Glass Notch View (Locked 120Hz, Tight Proportions)
+// MARK: - Root Notch View
 
 public struct NotchView: View {
     @ObservedObject private var controller = NotchController.shared
@@ -341,7 +341,7 @@ public struct NotchView: View {
         }
     }
 
-    // MARK: - Kinetic Liquid Glass HUD Notifications
+    // MARK: - HUD Notifications
 
     @ViewBuilder
     private func notificationView(_ note: NotchNotification) -> some View {
@@ -675,7 +675,7 @@ public struct NotchView: View {
         }
     }
 
-    // MARK: - Expanded Compact Liquid Glass Workspace (Zero Wasted Space)
+    // MARK: - Expanded Notch Workspace
 
     private var expandedView: some View {
         let headerHeight: CGFloat = controller.metrics.hasPhysicalNotch ? max(30, controller.metrics.notchHeight) : 28
@@ -688,9 +688,9 @@ public struct NotchView: View {
             // Ultra-clean 3-column top bar hugging the black MacBook notch
             HStack(spacing: 0) {
                 HStack(spacing: 2) {
-                    compactTabIcon(activity: .nowPlaying, icon: "music.note", help: "Musica")
-                    compactTabIcon(activity: .calendar, icon: "calendar", help: "Calendario")
-                    compactTabIcon(activity: .duo, icon: "rectangle.split.2x1", help: "Vista Duo")
+                    compactTabIcon(activity: .nowPlaying, icon: "music.note", help: "Music")
+                    compactTabIcon(activity: .calendar, icon: "calendar", help: "Calendar")
+                    compactTabIcon(activity: .duo, icon: "rectangle.split.2x1", help: "Duo View")
                     if settings.enableFileTray {
                         compactTabIcon(
                             activity: .fileTray,
@@ -725,19 +725,19 @@ public struct NotchView: View {
                         NotificationCenter.default.post(name: .orielSettings, object: nil)
                         controller.setExpanded(false)
                     }
-                    .help("Impostazioni")
+                    .help("Settings")
 
                     LiquidGlassIconButton(systemName: "chevron.up", size: 22, iconSize: 9.5) {
                         controller.setExpanded(false)
                     }
-                    .help("Chiudi Notch")
+                    .help("Close Notch")
                 }
                 .frame(width: sideWidth, alignment: .trailing)
             }
             .frame(height: headerHeight)
             .padding(.top, 1)
 
-            // Tight, zero-dead-space body chamber
+            // Body container
             ZStack {
                 switch controller.expandedActivity {
                 case .nowPlaying:
@@ -827,8 +827,8 @@ public struct NotchView: View {
 
     private func expandedTabLabel(_ activity: ExpandedActivity) -> String {
         switch activity {
-        case .nowPlaying: return "Musica"
-        case .calendar: return "Agenda"
+        case .nowPlaying: return "Music"
+        case .calendar: return "Schedule"
         case .duo: return "Duo"
         case .fileTray: return "Tray"
         }
@@ -854,8 +854,8 @@ public struct NotchView: View {
 
     private func relativeStartLabel(_ date: Date) -> String {
         let mins = Int(ceil(date.timeIntervalSinceNow / 60.0))
-        if mins <= 0 { return "Inizia adesso" }
-        return "Tra \(mins) min"
+        if mins <= 0 { return "Starting now" }
+        return "In \(mins)m"
     }
 
     private func handleFileDrop(providers: [NSItemProvider]) -> Bool {
@@ -883,7 +883,7 @@ public struct NotchView: View {
     }
 }
 
-// MARK: - Compact Liquid Glass Media Player (Zero Dead Space)
+// MARK: - Media Player View
 
 struct ExpandedMediaPlayerView: View {
     var compact: Bool = false
@@ -909,7 +909,7 @@ struct ExpandedMediaPlayerView: View {
 
     var body: some View {
         VStack(spacing: 7) {
-            // Row 1: Artwork + Metadata + Spectrum (Tight, zero wasted vertical space)
+            // Row 1: Artwork, track metadata, and waveform
             HStack(spacing: 11) {
                 Button {
                     media.openSourceApp()
@@ -962,7 +962,7 @@ struct ExpandedMediaPlayerView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 5) {
                         MarqueeText(
-                            media.track.hasTrack ? media.track.title : "Nessuna riproduzione",
+                            media.track.hasTrack ? media.track.title : "Nothing Playing",
                             font: .system(size: compact ? 13 : 14, weight: .semibold),
                             color: .white
                         )
@@ -980,7 +980,7 @@ struct ExpandedMediaPlayerView: View {
                     if !media.track.hasTrack && (media.spotifyAutomationDenied || media.musicAutomationDenied) {
                         HStack(spacing: 6) {
                             if media.spotifyAutomationDenied {
-                                Button("Consenti Spotify") {
+                                Button("Allow Spotify") {
                                     media.requestAutomationPermission(for: "com.spotify.client")
                                 }
                                 .buttonStyle(LiquidPressButtonStyle())
@@ -991,7 +991,7 @@ struct ExpandedMediaPlayerView: View {
                                 .background(settings.accentColor, in: Capsule())
                             }
                             if media.musicAutomationDenied {
-                                Button("Consenti Music") {
+                                Button("Allow Music") {
                                     media.requestAutomationPermission(for: "com.apple.Music")
                                 }
                                 .buttonStyle(LiquidPressButtonStyle())
@@ -1035,7 +1035,7 @@ struct ExpandedMediaPlayerView: View {
             }
             .liquidReveal(visible: revealed, delay: 0.0)
 
-            // Row 2: Tactile Liquid Glass Scrubber
+            // Row 2: Playback scrubber
             TimelineView(.periodic(from: Date(), by: 0.5)) { timeline in
                 let duration = max(1, media.track.duration)
                 let current = media.track.hasTrack ? media.track.currentPosition(at: timeline.date) : 0
@@ -1073,7 +1073,7 @@ struct ExpandedMediaPlayerView: View {
             }
             .liquidReveal(visible: revealed, delay: 0.025)
 
-            // Row 3: Compact Kinetic Transport Strip
+            // Row 3: Transport controls
             HStack(spacing: compact ? 12 : 18) {
                 LiquidGlassIconButton(
                     systemName: extraControlSymbol,
@@ -1126,7 +1126,7 @@ struct ExpandedMediaPlayerView: View {
     }
 
     private var subtitleLine: String {
-        guard media.track.hasTrack else { return "Avvia musica su Spotify, Music o browser" }
+        guard media.track.hasTrack else { return "Play music in Spotify, Apple Music, or your browser" }
         if !settings.hideSongTitleExtras && !media.track.album.isEmpty && !compact {
             return "\(media.track.artist) — \(media.track.album)"
         }
@@ -1259,7 +1259,7 @@ struct MediaProgressSlider: View {
     }
 }
 
-// MARK: - Compact Liquid Glass Calendar View (Zero Dead Void)
+// MARK: - Calendar View
 
 struct ExpandedCalendarView: View {
     var compact: Bool = false
@@ -1291,12 +1291,12 @@ struct ExpandedCalendarView: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 HStack {
-                    Text(compact ? headerDateString : "Agenda di oggi")
+                    Text(compact ? headerDateString : "Today's Schedule")
                         .font(.system(size: 11.5, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.9))
                     Spacer()
                     if hasCalendarAccess {
-                        Button("Apri") {
+                        Button("Open") {
                             calendar.openInCalendar()
                         }
                         .buttonStyle(LiquidPressButtonStyle())
@@ -1326,7 +1326,7 @@ struct ExpandedCalendarView: View {
                                 }
                             }
                             if !calendar.tomorrowEvents.isEmpty && !compact {
-                                Text("Domani")
+                                Text("Tomorrow")
                                     .font(.system(size: 9.5, weight: .semibold))
                                     .foregroundStyle(.white.opacity(0.5))
                                 ForEach(calendar.tomorrowEvents.prefix(2)) { ev in
@@ -1380,7 +1380,7 @@ struct ExpandedCalendarView: View {
                 .padding(.vertical, 2.5)
                 .background(Color.white.opacity(0.09), in: Capsule())
             } else {
-                Text("\(calendar.todayEvents.count) eventi")
+                Text("\(calendar.todayEvents.count) \(calendar.todayEvents.count == 1 ? "event" : "events")")
                     .font(.system(size: 10, weight: .medium))
                     .foregroundStyle(.white.opacity(0.55))
             }
@@ -1395,15 +1395,15 @@ struct ExpandedCalendarView: View {
                     Image(systemName: "calendar.badge.plus")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(settings.accentColor)
-                    Text("Collega Calendario")
+                    Text("Connect Calendar")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.white)
                 }
-                Text("Mostra eventi, link Zoom/Meet e avvisi di partenza.")
+                Text("See upcoming events, meeting links, and departure alerts.")
                     .font(.system(size: 10.5))
                     .foregroundStyle(.white.opacity(0.65))
                     .lineLimit(2)
-                Button("Abilita Accesso") {
+                Button("Enable Access") {
                     calendar.requestAccess()
                 }
                 .buttonStyle(LiquidPressButtonStyle())
@@ -1429,7 +1429,7 @@ struct ExpandedCalendarView: View {
                         Text("\(Int(round(w.temperatureCelsius)))°C • \(w.conditionDescription)")
                             .font(.system(size: 12.5, weight: .semibold))
                             .foregroundStyle(.white)
-                        Text("Nessun impegno rimanente oggi.")
+                        Text("Nothing else scheduled today.")
                             .font(.system(size: 10.5))
                             .foregroundStyle(.white.opacity(0.62))
                     }
@@ -1443,10 +1443,10 @@ struct ExpandedCalendarView: View {
                             .foregroundStyle(settings.accentColor)
                     }
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("Giornata libera")
+                        Text("Clear Day")
                             .font(.system(size: 12.5, weight: .semibold))
                             .foregroundStyle(.white)
-                        Text("Nessun evento imminente oggi.")
+                        Text("No upcoming events today.")
                             .font(.system(size: 10.5))
                             .foregroundStyle(.white.opacity(0.62))
                     }
@@ -1466,7 +1466,7 @@ struct ExpandedCalendarView: View {
         let days = Array(range)
 
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 1), count: 7), spacing: 2) {
-            ForEach(["L", "M", "M", "G", "V", "S", "D"], id: \.self) { wd in
+            ForEach(Array(["M", "T", "W", "T", "F", "S", "S"].enumerated()), id: \.offset) { _, wd in
                 Text(wd)
                     .font(.system(size: 8, weight: .bold))
                     .foregroundStyle(.white.opacity(0.45))
@@ -1506,7 +1506,7 @@ struct ExpandedCalendarView: View {
     }
 
     private func timeRange(for ev: CalendarEventItem) -> String {
-        if ev.isAllDay { return "Tutto il giorno" }
+        if ev.isAllDay { return "All day" }
         let df = DateFormatter()
         df.dateFormat = "HH:mm"
         return "\(df.string(from: ev.startDate)) – \(df.string(from: ev.endDate))"
@@ -1590,10 +1590,10 @@ struct ExpandedFileTrayView: View {
                         .animation(OrielMotion.elasticTap, value: isDropTargeted)
 
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(isDropTargeted ? "Rilascia per salvare nel Notch" : "Trascina i file sul Notch")
+                            Text(isDropTargeted ? "Drop to add to File Tray" : "Drag files onto the Notch")
                                 .font(.system(size: 12.5, weight: .semibold))
                                 .foregroundStyle(.white)
-                            Text("Screenshot, PDF o cartelle sempre pronti per AirDrop e Finder.")
+                            Text("Keep screenshots, PDFs, or folders handy for AirDrop and Finder.")
                                 .font(.system(size: 10.5))
                                 .foregroundStyle(.white.opacity(0.62))
                                 .lineLimit(2)
@@ -1605,12 +1605,12 @@ struct ExpandedFileTrayView: View {
                 }
             } else {
                 HStack {
-                    Text("\(tray.items.count) \(tray.items.count == 1 ? "file" : "file") nel Tray")
+                    Text("\(tray.items.count) \(tray.items.count == 1 ? "item" : "items") in Tray")
                         .font(.system(size: 11, weight: .semibold))
                         .contentTransition(.numericText())
                         .foregroundStyle(.white.opacity(0.8))
                     Spacer()
-                    Button("Svuota") {
+                    Button("Clear") {
                         withAnimation(OrielMotion.fluidTab) {
                             tray.clear()
                         }
@@ -1668,7 +1668,7 @@ struct ExpandedFileTrayView: View {
                                                 .foregroundStyle(.white.opacity(0.55))
                                         }
                                         .buttonStyle(LiquidPressButtonStyle())
-                                        .help("Rimuovi")
+                                        .help("Remove")
                                     }
                                 }
                                 .padding(.horizontal, 7)

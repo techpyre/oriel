@@ -241,8 +241,8 @@ struct OrielTests {
     @Test("Signing identity classification distinguishes persistent certificate from ad-hoc")
     func signingIdentityClassification() {
         #expect(MediaKeyManager.classifySigningIdentity(hasCertificates: true, teamIdentifier: "287NUTSP69") == "Developer ID (287NUTSP69)")
-        #expect(MediaKeyManager.classifySigningIdentity(hasCertificates: true, teamIdentifier: nil) == "Certificato Locale (Stabile)")
-        #expect(MediaKeyManager.classifySigningIdentity(hasCertificates: false, teamIdentifier: nil) == "Ad-Hoc (Temporanea)")
+        #expect(MediaKeyManager.classifySigningIdentity(hasCertificates: true, teamIdentifier: nil) == "Local Certificate")
+        #expect(MediaKeyManager.classifySigningIdentity(hasCertificates: false, teamIdentifier: nil) == "Ad-Hoc")
     }
 
     @Test("NotchController rubber-band swipe preview clamping and reset")

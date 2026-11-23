@@ -45,7 +45,7 @@ NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
 let rect = NSRect(x: 0, y: 0, width: size, height: size)
 let squircle = NSBezierPath(roundedRect: rect.insetBy(dx: 56, dy: 56), xRadius: 215, yRadius: 215)
 
-// Dark obsidian background gradient
+// Dark smoked background gradient
 let bgGrad = NSGradient(colors: [
     NSColor(calibratedRed: 0.11, green: 0.12, blue: 0.15, alpha: 1.0),
     NSColor(calibratedRed: 0.03, green: 0.03, blue: 0.04, alpha: 1.0)
@@ -285,7 +285,6 @@ LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchS
 echo "==> Installing canonical app bundle to ${INSTALL_BUNDLE}..."
 if [[ -x "${LSREGISTER}" ]]; then
     "${LSREGISTER}" -u "${APP_BUNDLE}" >/dev/null 2>&1 || true
-    "${LSREGISTER}" -u "/private/tmp/ProbeMR.app" >/dev/null 2>&1 || true
 fi
 
 rm -rf "${INSTALL_BUNDLE}"

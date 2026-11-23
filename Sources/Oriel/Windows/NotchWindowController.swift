@@ -218,7 +218,7 @@ public final class LockPanel: NSPanel {
     public override var canBecomeMain: Bool { false }
 }
 
-// MARK: - Zero-Permission Cursor Tracker, Hover Halo, Outside-Click Collapse & Swipes
+// MARK: - Pointer Tracking, Hover & Swipes
 
 @MainActor
 public final class NotchInteractionMonitor {
@@ -237,7 +237,7 @@ public final class NotchInteractionMonitor {
         stop()
         self.onCursorEvaluated = onCursorEvaluated
 
-        // Zero-permission 30Hz NSEvent.mouseLocation tracker so hover works reliably
+        // Poll cursor coordinates at ~30 Hz so hover works even without background event permissions
         // regardless of TCC global-mouseMoved restrictions or menu-bar tracking modes.
         lastPolledPoint = NSEvent.mouseLocation
         let timer = Timer(timeInterval: 0.032, repeats: true) { [weak self] _ in

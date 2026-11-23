@@ -385,7 +385,7 @@ public final class MediaManager: ObservableObject {
         Task.detached(priority: .userInitiated) { [weak self] in
             var resolvedURL: URL? = nil
 
-            // 1. Spotify oEmbed (zero auth, returns official cover art thumbnail_url)
+            // 1. Spotify oEmbed (unauthenticated lookup for cover thumbnail URL)
             if let shareURL, shareURL.absoluteString.contains("open.spotify.com/track/"),
                var comps = URLComponents(string: "https://open.spotify.com/oembed") {
                 comps.queryItems = [URLQueryItem(name: "url", value: shareURL.absoluteString)]
@@ -395,7 +395,7 @@ public final class MediaManager: ObservableObject {
                 }
             }
 
-            // 2. iTunes Search API fallback (zero auth, 600x600 artwork for Apple Music / any song)
+            // 2. iTunes Search API fallback (600x600 cover art for Apple Music and local tracks)
             if resolvedURL == nil, !title.isEmpty {
                 let query = artist.isEmpty ? title : "\(title) \(artist)"
                 if var comps = URLComponents(string: "https://itunes.apple.com/search") {
@@ -610,7 +610,7 @@ public final class MediaManager: ObservableObject {
         let bid = track.sourceBundleID
         guard !bid.isEmpty else { return }
 
-        // If browser, focus the matching tab via AppleScript just like Oriel
+        // Focus the matching browser tab via AppleScript
         if bid == "com.apple.Safari" || bid == "com.apple.SafariTechnologyPreview" {
             let safeTitle = track.title.replacingOccurrences(of: "\"", with: "\\\"")
             let appName = bid == "com.apple.Safari" ? "Safari" : "Safari Technology Preview"

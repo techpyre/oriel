@@ -2,16 +2,16 @@ import AppKit
 import SwiftUI
 import OrielCore
 
-// MARK: - 120Hz Native ProMotion Motion Curves
+// MARK: - Animation Springs
 
 public enum OrielMotion {
-    /// Crisp, joyful liquid spring for notch expansion & collapse.
+    /// Spring curve for expanding and collapsing the notch.
     public static let liquidMorph = Animation.spring(duration: 0.28, bounce: 0.14)
     /// Matched-geometry sliding glass tab capsule.
     public static let fluidTab = Animation.spring(duration: 0.24, bounce: 0.10)
-    /// Tactile button press & HUD elastic recoil.
+    /// Short spring for button presses and boundary bounce.
     public static let elasticTap = Animation.spring(duration: 0.16, bounce: 0.22)
-    /// Pure-transform GPU content reveal (zero blur passes).
+    /// Transform-only content reveal.
     public static let opticalReveal = Animation.spring(duration: 0.24, bounce: 0.08)
     /// Ambient album color crossfade.
     public static let ambientColor = Animation.easeInOut(duration: 0.50)
@@ -82,7 +82,7 @@ public struct NotchShape: InsettableShape {
     }
 }
 
-// MARK: - Zero-Invalidation Native macOS 26/27 Liquid Glass Surface
+// MARK: - Glass Effect Backing
 
 public struct NativeGlassView: NSViewRepresentable {
     public var cornerRadius: CGFloat
@@ -178,8 +178,7 @@ public struct NativeGlassView: NSViewRepresentable {
     }
 }
 
-/// High-frame-rate Obsidian Liquid Glass surface engineered to merge seamlessly into the black
-/// hardware MacBook notch with zero live per-frame blur or WindowServer backdrop invalidations.
+/// Glass surface blended with the top display bezel without invalidating layers mid-spring.
 public struct LiquidNotchSurface: View {
     public let shape: NotchShape
     public let notchWidth: CGFloat
@@ -221,7 +220,7 @@ public struct LiquidNotchSurface: View {
 
     public var body: some View {
         ZStack(alignment: .top) {
-            // 1. Constant-config native NSGlassEffectView (zero mesh rebuilds mid-spring!)
+            // 1. Keep NSGlassEffectView configuration stable during spring animations
             NativeGlassView(
                 cornerRadius: 20,
                 tintAlpha: 0.36,
@@ -230,7 +229,7 @@ public struct LiquidNotchSurface: View {
             )
             .allowsHitTesting(false)
 
-            // 2. Obsidian smoked veil transitioning smoothly from pure black top bezel into luminous glass
+            // 2. Dark tint vignette softening the edge under the black menu bar bezel
             LinearGradient(
                 colors: isExpanded
                     ? [
@@ -248,7 +247,7 @@ public struct LiquidNotchSurface: View {
             )
             .allowsHitTesting(false)
 
-            // 3. Hardware camera notch seamless obsidian crown (pure GPU gradient, zero live blur!)
+            // 3. Top cap matching the camera housing silhouette
             if hasPhysicalNotch {
                 VStack(spacing: 0) {
                     ZStack {
@@ -332,7 +331,7 @@ public struct LiquidNotchSurface: View {
     }
 }
 
-// MARK: - Tactile Liquid Press Style & Zero-Blur GPU Optical Reveal
+// MARK: - Button Press Style & Content Reveal
 
 public struct LiquidPressButtonStyle: ButtonStyle {
     public var pressedScale: CGFloat
@@ -619,7 +618,7 @@ public struct MarqueeText: View {
     }
 }
 
-// MARK: - Zero-Allocation Canvas 6-Bar Waveform (Isolated Leaf View)
+// MARK: - 6-Bar Audio Level Waveform
 
 public struct LiveAudioWaveform: View {
     public let isPlaying: Bool
@@ -715,7 +714,7 @@ public struct WaveformView: View {
     }
 }
 
-// MARK: - Zero-Lag Cached Artwork Ambient Backdrop
+// MARK: - Cached Artwork Backdrop
 
 public struct ArtworkCutoutBackdrop: View {
     public let blurredArtwork: NSImage?

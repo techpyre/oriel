@@ -12,8 +12,8 @@ public final class MediaKeyManager: ObservableObject {
     @Published public var isAccessibilityAuthorized: Bool = false
     @Published public var axTrusted: Bool = false
     @Published public var isMonitoring: Bool = false
-    @Published public var activeTapMode: String = "Inattivo"
-    @Published public var signingSummary: String = "Verifica firma…"
+    @Published public var activeTapMode: String = "Inactive"
+    @Published public var signingSummary: String = "Checking signature…"
 
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
@@ -40,7 +40,7 @@ public final class MediaKeyManager: ObservableObject {
         }
         isAccessibilityAuthorized = trusted || (eventTap != nil)
         if eventTap == nil {
-            activeTapMode = "Inattivo"
+            activeTapMode = "Inactive"
         }
     }
 
@@ -71,13 +71,13 @@ public final class MediaKeyManager: ObservableObject {
         var code: SecStaticCode?
         let url = Bundle.main.bundleURL.resolvingSymlinksInPath() as CFURL
         guard SecStaticCodeCreateWithPath(url, [], &code) == errSecSuccess, let staticCode = code else {
-            return "Non firmato"
+            return "Unsigned"
         }
         var infoRef: CFDictionary?
         let flags = SecCSFlags(rawValue: kSecCSSigningInformation)
         guard SecCodeCopySigningInformation(staticCode, flags, &infoRef) == errSecSuccess,
               let info = infoRef as? [String: Any] else {
-            return "Non firmato"
+            return "Unsigned"
         }
         let certs = info[kSecCodeInfoCertificates as String] as? [SecCertificate]
         let team = info[kSecCodeInfoTeamIdentifier as String] as? String
@@ -89,9 +89,9 @@ public final class MediaKeyManager: ObservableObject {
             return "Developer ID (\(team))"
         }
         if hasCertificates {
-            return "Certificato Locale (Stabile)"
+            return "Local Certificate"
         }
-        return "Ad-Hoc (Temporanea)"
+        return "Ad-Hoc"
     }
 
     private func observeAccessibilityChanges() {
@@ -168,7 +168,7 @@ public final class MediaKeyManager: ObservableObject {
         // Prefer .cghidEventTap so HID Volume/Brightness events are swallowed BEFORE macOS
         // ControlCenter / BezelServices renders the standard macOS HUD.
         var createdTap: CFMachPort? = nil
-        var mode = "Inattivo"
+        var mode = "Inactive"
         if let hidTap = CGEvent.tapCreate(
             tap: .cghidEventTap,
             place: .headInsertEventTap,
@@ -193,7 +193,7 @@ public final class MediaKeyManager: ObservableObject {
 
         guard let tap = createdTap else {
             isMonitoring = false
-            activeTapMode = "Inattivo"
+            activeTapMode = "Inactive"
             return
         }
 
@@ -217,7 +217,7 @@ public final class MediaKeyManager: ObservableObject {
             runLoopSource = nil
         }
         isMonitoring = false
-        activeTapMode = "Inattivo"
+        activeTapMode = "Inactive"
     }
 
     private func handleEventTap(type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {

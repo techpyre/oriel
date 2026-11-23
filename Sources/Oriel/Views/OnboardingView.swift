@@ -119,7 +119,7 @@ public struct OnboardingView: View {
                 Text("Permissions & Integrations")
                     .font(.system(size: 20, weight: .bold))
                     .foregroundStyle(.white)
-                Text("Grant only what you want to use daily. Every feature works seamlessly once enabled.")
+                Text("Grant only what you want to use daily. Each feature activates as soon as permission is enabled.")
                     .font(.system(size: 12.5))
                     .foregroundStyle(.white.opacity(0.65))
             }
@@ -129,7 +129,7 @@ public struct OnboardingView: View {
                     icon: "keyboard.badge.ellipsis",
                     color: OrielColors.amber,
                     title: "Accessibility (Volume & Brightness HUD)",
-                    subtitle: "Intercepts hardware media, volume, and brightness keys cleanly.",
+                    subtitle: "Handles hardware media, volume, and brightness keys.",
                     granted: mediaKeys.isAccessibilityAuthorized
                 ) {
                     mediaKeys.promptAccessibilityPermission()
