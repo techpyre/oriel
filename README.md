@@ -9,7 +9,7 @@
     &nbsp;·&nbsp;
     <a href="https://github.com/techpyre/oriel/releases/latest/download/Oriel.zip">Oriel.zip</a>
     &nbsp;·&nbsp;
-    <a href="https://limen-ten.vercel.app"><strong>Website ↗</strong></a>
+    <a href="https://oriel-mac.vercel.app"><strong>Website ↗</strong></a>
   </p>
 
   <p>
